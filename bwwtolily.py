@@ -7,7 +7,7 @@
 from optparse import OptionParser
 import sys,os,re,subprocess
 
-version = "0.4.1"
+version = "0.4.2"
 
 #make a print function to handle various version of python
 def do_print(string):
@@ -369,7 +369,7 @@ if __name__ == "__main__" :
 	#parse the args
 	(options, args) = parser.parse_args()
 	if options.version:
-			do_print( "bwwtolily: ",version)
+			do_print( "bwwtolily: "+version)
 			sys.exit()
 
 	if options.input!=None:
