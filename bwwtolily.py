@@ -1,9 +1,9 @@
 #!/usr/bin/env python
-'''
-bwwtolily: will convert a bww file to a lilypond file
-copyright: 2008 Jezra Lickter
-GPL v3
-'''
+#
+#bwwtolily: will convert a bww file to a lilypond file
+#copyright: 2008 Jezra Lickter
+#GPL v3
+
 from optparse import OptionParser
 import sys,os,re,subprocess
 
@@ -129,29 +129,7 @@ class bwwtolily :
 			tune_notes = tune_notes.replace("\r"," ")
 			tune_notes = tune_notes.replace("\n"," ")
 			tune_notes = tune_notes.replace("\t"," ")
-			'''determine if there is a partial'''
-			'''
-			#get the first part of the notes from & to !
-			partial_regex = re.compile("&.*?[ |\r\n]!",re.S)
-			#partial_regex = re.compile("&.*?!",re.S)
-			result = partial_regex.findall(tune_notes)
-			search_string = result[0]
-			#find the time of the notes in the search string
-			partial_regex = re.compile("[A-Z]+[a-z]*_([0-9]{1,2})")
-			result = partial_regex.findall(search_string)
-			self.tune_partial_string = ""
-			if result:
-				partial_time = 0
-				#TODO: determine the proper way to determine the partial
-				for number in result:
-					partial_time += (1.0/int(number))
-				print "time: %s" % ( partial_time )
-				#how many quarter notes is this?
-				quarters = partial_time/.25
-				print "quarters: %d" % quarters
-				#self.tune_partial_string = "\\partial %d" % quarters
-				#self.tune_partial_string = "\\partial "+str(part)
-			'''
+
 			#split the string into it's constituents elements
 			elements = tune_notes.split()
 			for element in elements:
@@ -175,7 +153,7 @@ class bwwtolily :
 			return lilynote
 
 	def transpose(self,element):
-			'''receive a bww element and return a lilypond equivelent'''
+			#receive a bww element and return a lilypond equivelent
 
 			#is the element a note?
 			note_result = self.regex_note_info.search(element)
@@ -291,10 +269,9 @@ class bwwtolily :
 				#is the element in the ignore list?
 				if element in self.ignore_elements:
 					return
-				'''
-				if the element is an start double,
-				check if the previous element was a end double
-				'''
+
+				#if the element is a start double,
+				#check if the previous element was a end double
 				if len(self.tune_elements):
 					last_element = self.tune_elements[-1]
 					if element=="I!''" and last_element.find(":|"):
