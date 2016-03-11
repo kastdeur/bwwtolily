@@ -70,7 +70,8 @@ class bwwtolily :
 			"grp":"\\grip",
 			"tar":"\\taor",
 			"gstd":"\\slurd",
-			"tdbf":"\\tdblf"
+			"tdbf":"\\tdblf",
+			"rodin":"\\rodin"
 			}
 			#are we adding midi?
 			if addmidi:
