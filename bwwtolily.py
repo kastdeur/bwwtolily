@@ -62,15 +62,19 @@ class bwwtolily :
 			"_'":"\\set Score.repeatCommands = #'((volta #f)) \\bar \"|\"\n",
 			"!t":"\\bar \"|\" \\break\n\n",
 			"thrd":"\\thrwd",
+			"hvthrd":"\\gripthrwd",
+			"lhstd":"\\whslurd",
 			"gbr":"\\gbirl",
 			"brl":"\\wbirl",
 			"abr":"\\birl",
 			"lgstd":"\\dbld",
 			"gste":"\\slure",
+			"gstb":"\\slurb",
 			"grp":"\\grip",
 			"tar":"\\taor",
 			"gstd":"\\slurd",
-			"tdbf":"\\tdblf"
+			"tdbf":"\\tdblf",
+			"rodin":"\\bgrip"
 			}
 			#are we adding midi?
 			if addmidi:
