@@ -4,10 +4,10 @@
 #copyright: 2008 Jezra Lickter
 #GPL v3
 
-from optparse import OptionParser
+from argparse import ArgumentParser
 import sys,os,re,subprocess
 
-version = "0.4.2"
+version = "0.5.2"
 
 #make a print function to handle various version of python
 def do_print(string):
@@ -74,7 +74,9 @@ class bwwtolily :
 			"tar":"\\taor",
 			"gstd":"\\slurd",
 			"tdbf":"\\tdblf",
-			"rodin":"\\bgrip"
+			"rodin":"\\bgrip",
+                        "echola":"\\echoA",
+                        "echolg":"\\echolg"
 			}
 			#are we adding midi?
 			if addmidi:
@@ -358,31 +360,43 @@ melody = {
 
 #use the bww2lily class
 if __name__ == "__main__" :
-	parser = OptionParser()
-	parser.add_option("-i", "--in", dest="input",
-			help="the FILE to convert", metavar="FILE")
-	parser.add_option("-l", "--lilypond",
+	parser = ArgumentParser()
+	parser.add_argument("files", default='', nargs='*')
+	parser.add_argument("-i", "--in", dest="input",
+			help="the FILE to convert", metavar="FILE",
+			)
+	parser.add_argument("-l", "--lilypond",
 			action="store_true", dest="runlilypond",default=False,
 			help="run lilypond after converting the file")
-	parser.add_option("-m", "--midi",
+	parser.add_argument("-m", "--midi",
 			action="store_true", dest="addmidi",default=False,
 			help="add midi output to the lilypond file")
-	parser.add_option("-v","--version",dest='version',default=False,
+	parser.add_argument("-v","--version",dest='version',default=False,
 			action="store_true",help="print version information and quit")
 
 	#parse the args
-	(options, args) = parser.parse_args()
-	if options.version:
+	args = parser.parse_args()
+	if args.version:
 			do_print( "bwwtolily: "+version)
 			sys.exit()
 
-	if options.input!=None:
-			b2l = bwwtolily(options.addmidi)
-			b2l.set_file(options.input)
+	if args.input!=None:
+			b2l = bwwtolily(args.addmidi)
+			b2l.set_file(args.input)
 			b2l.parse()
 			new_file = b2l.create_output_file()
 			#are we running lilypond?
-			if options.runlilypond:
+			if args.runlilypond:
+				#try to run lilypond as a subprocess
+				subprocess.check_call("lilypond \""+new_file+"\"",shell=True)
+	elif args.files:
+		for f in args.files:
+			b2l = bwwtolily(args.addmidi)
+			b2l.set_file(f)
+			b2l.parse()
+			new_file = b2l.create_output_file()
+			#are we running lilypond?
+			if args.runlilypond:
 				#try to run lilypond as a subprocess
 				subprocess.check_call("lilypond \""+new_file+"\"",shell=True)
 	else:
