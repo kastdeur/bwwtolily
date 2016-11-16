@@ -33,10 +33,18 @@ class bwwtolily :
 			self.regex_note_info=re.compile("(?P<note>[A-Z]+)(?P<dir>[a-z]*)_(?P<time>[0-9]{1,2})")
 			#a regex to find grace notes
 			self.regex_grace_note = re.compile("([h|l]*[abcdefgt])g")
+			#a regex to find echo beats
+			self.regex_echo_beat = re.compile("echo([h|l]*[abcdefgt])")
 			#a regex to parse doublings
 			self.regex_doubling = re.compile("^db([h|l]*[g|a|b|c|d|e|f]{1})")
 			#a regex to parse half_doublings
 			self.regex_half_doubling = re.compile("^hdb([h|l]*[g|a|b|c|d|e|f]{1})")
+			#a regex to parse peles
+			self.regex_pele = re.compile("^pel([la|b|c|d|e|f]{1})")
+			#a regex to parse half peles
+			self.regex_half_pele = re.compile("^hpel([la|b|c|d|e|f|hg]{1})")
+			#a regex to parse thumb peles
+			self.regex_thumb_pele = re.compile("^tpel([hg|la|b|c|d|e|f]{1})")
 			#a regex for finding strikes
 			self.regex_strike = re.compile("str([h|l]*[abcdefg])")
 			#a regex to find dots
@@ -64,6 +72,10 @@ class bwwtolily :
 			"thrd":"\\thrwd",
 			"hvthrd":"\\gripthrwd",
 			"lhstd":"\\whslurd",
+			"hgrpc":"\\hcatchc",
+                        "lpeld":"\\lpeld",
+                        "lhpeld":"\\lhpeld",
+                        "ltpeld":"\\ltpeld",
 			"gbr":"\\gbirl",
 			"brl":"\\wbirl",
 			"abr":"\\birl",
@@ -72,11 +84,10 @@ class bwwtolily :
 			"gstb":"\\slurb",
 			"grp":"\\grip",
 			"tar":"\\taor",
+			"crunl":"\\crun",
 			"gstd":"\\slurd",
 			"tdbf":"\\tdblf",
 			"rodin":"\\bgrip",
-                        "echola":"\\echoA",
-                        "echolg":"\\echolg"
 			}
 			#are we adding midi?
 			if addmidi:
@@ -192,6 +203,12 @@ class bwwtolily :
 				grace = "\\gr"+self.lilynote( grace_result.group(1) )
 				self.tune_elements.append(grace)
 				return
+			#is the element an echo beat?
+			echo_beat_result=self.regex_echo_beat.search(element)
+			if echo_beat_result:
+				echo_beat = "\\echo"+self.lilynote( echo_beat_result.group(1) )
+				self.tune_elements.append(echo_beat)
+				return
 			#is the element a doubling?
 			doubling_result=self.regex_doubling.search(element)
 			if doubling_result:
@@ -203,6 +220,24 @@ class bwwtolily :
 			if hdoubling_result:
 				half_doubling = "\\hdbl"+self.lilynote( hdoubling_result.group(1) )
 				self.tune_elements.append(half_doubling)
+				return
+			#is the element a pele?
+			pele_result=self.regex_pele.search(element)
+			if pele_result:
+				pele = "\\pel"+self.lilynote( pele_result.group(1) )
+				self.tune_elements.append(pele)
+				return
+			#is the element a thumb pele?
+			tpele_result=self.regex_thumb_pele.search(element)
+			if tpele_result:
+				tpele = "\\tpel"+self.lilynote( tpele_result.group(1) )
+				self.tune_elements.append(tpele)
+				return
+			#is the element a hpele?
+			hpele_result=self.regex_half_pele.search(element)
+			if hpele_result:
+				hpele = "\\hpel"+self.lilynote( hpele_result.group(1) )
+				self.tune_elements.append(hpele)
 				return
 			#is the element a strike?
 			strike_result=self.regex_strike.search(element)
@@ -216,9 +251,9 @@ class bwwtolily :
 				elif strike =="\\slurg":
 					#let the strike be a grace note on the high g
 					strike = "\\grg"
-				#if hte strike is on low a
+				#if the strike is on low a
 				elif strike == "\\slura":
-					#let the strike be a grace not on low a
+					#let the strike be a grace note on low a
 					strike = "\\gra"
 				self.tune_elements.append(strike)
 				return
