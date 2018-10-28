@@ -1,17 +1,21 @@
-bwwtolily will attempt to convert a .bww or .bmw file to a lilypond
-(http://lilypond.org) parsable file. Not all of the embellishments 
-get converted properly, this is espessially true with piobaireachd,
+Convert Bagpipe Reader to Lilypond
+==================================
+
+This is a utility to convert a .bww or .bmw file to a [lilypond](https://lilypond.org) parsable file.
+Not all of the embellishments get converted properly, this is espessially true with piobaireachd, 
 and the program will list the embellishments that were not converted.
 
 If you recognize an embellishment that isn't being parsed, please 
-send an email regarding the embellishment to jezra@jezra.net and I
-will try to add the embellishment to the application.
+create an [issue on github](https://github.com/kastdeur/bwwtolily/issues)
 
 usage:
->bwwtolily -i /path/to/a/bww/file
+```
+$ bwwtolily /path/to/a/bww/file
+```
 
 optionally, using the "-l" flag will try to run lilypond on the
 created .ly file
 example:
->bwwtolily -i /path/to/bww/file -l
-
+```
+$ bwwtolily  /path/to/bww/file -l
+```
