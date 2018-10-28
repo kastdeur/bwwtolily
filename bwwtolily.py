@@ -2,12 +2,13 @@
 #
 #bwwtolily: will convert a bww file to a lilypond file
 #copyright: 2008 Jezra Lickter
+#contributions by ET de Boone
 #GPL v3
 
 from argparse import ArgumentParser
 import sys,os,re,subprocess
 
-version = "0.5.2"
+version = "0.6.2"
 
 #make a print function to handle various version of python
 def do_print(string):
@@ -57,37 +58,37 @@ class bwwtolily :
 			self.ignore_elements = ("sharpf","sharpc","space","&")
 			#create a dictionary of common bww elements and their lily counterparts
 			self.transpose_dict = {
-			"!":"\\bar \"|\"\n",
-			"!I":"\\bar \".|\" \\break \n",
-			#"''!I":"\\set Score.repeatCommands = #'( end-repeat ) \\break \n",
-			"''!I":"\\bar \":|\" \\break\n",
-			#"''!I":"} \\break \n",
-			"I!''":"\\bar \"|:\"",
-			"I!":"\\bar \"|.\"",
-			#"I!''":"\\set Score.repeatCommands = #'( start-repeat )\n",
+				"!":"\\bar \"|\"\n",
+				"!I":"\\bar \".|\" \\break \n",
+				#"''!I":"\\set Score.repeatCommands = #'( end-repeat ) \\break \n",
+				"''!I":"\\bar \":|\" \\break\n",
+				#"''!I":"} \\break \n",
+				"I!''":"\\bar \"|:\"",
+				"I!":"\\bar \"|.\"",
+				#"I!''":"\\set Score.repeatCommands = #'( start-repeat )\n",
 
-			#"I!''":"\n\\repeat volta 2 {\n",
-			"_'":"\\set Score.repeatCommands = #'((volta #f)) \\bar \"|\"\n",
-			"!t":"\\bar \"|\" \\break\n\n",
-			"thrd":"\\thrwd",
-			"hvthrd":"\\gripthrwd",
-			"lhstd":"\\whslurd",
-			"hgrpc":"\\hcatchc",
-                        "lpeld":"\\lpeld",
-                        "lhpeld":"\\lhpeld",
-                        "ltpeld":"\\ltpeld",
-			"gbr":"\\gbirl",
-			"brl":"\\wbirl",
-			"abr":"\\birl",
-			"lgstd":"\\dbld",
-			"gste":"\\slure",
-			"gstb":"\\slurb",
-			"grp":"\\grip",
-			"tar":"\\taor",
-			"crunl":"\\crun",
-			"gstd":"\\slurd",
-			"tdbf":"\\tdblf",
-			"rodin":"\\bgrip",
+				#"I!''":"\n\\repeat volta 2 {\n",
+				"_'":"\\set Score.repeatCommands = #'((volta #f)) \\bar \"|\"\n",
+				"!t":"\\bar \"|\" \\break\n\n",
+				"thrd":"\\thrwd",
+				"hvthrd":"\\gripthrwd",
+				"lhstd":"\\whslurd",
+				"hgrpc":"\\hcatchc",
+				"lpeld":"\\lpeld",
+				"lhpeld":"\\lhpeld",
+				"ltpeld":"\\ltpeld",
+				"gbr":"\\gbirl",
+				"brl":"\\wbirl",
+				"abr":"\\birl",
+				"lgstd":"\\dbld",
+				"gste":"\\slure",
+				"gstb":"\\slurb",
+				"grp":"\\grip",
+				"tar":"\\taor",
+				"crunl":"\\crun",
+				"gstd":"\\slurd",
+				"tdbf":"\\tdblf",
+				"rodin":"\\bgrip",
 			}
 			#are we adding midi?
 			if addmidi:
@@ -114,7 +115,7 @@ class bwwtolily :
 			sys.exit()
 
 	def parse(self):
-			'''reate a string that represents the converted
+			'''create a string that represents the converted
 			contents of the file'''
 			#open the file read only
 			file_handle = open(self.original_file,"r")
@@ -170,7 +171,7 @@ class bwwtolily :
 			return lilynote
 
 	def transpose(self,element):
-			#receive a bww element and return a lilypond equivelent
+			#receive a bww element and return a lilypond equivalent
 
 			#is the element a note?
 			note_result = self.regex_note_info.search(element)
@@ -197,48 +198,56 @@ class bwwtolily :
 							self.most_recent_note-=1
 							self.tune_elements.append("]")
 				return
+
 			#is the element a grace note?
 			grace_result=self.regex_grace_note.search(element)
 			if grace_result:
 				grace = "\\gr"+self.lilynote( grace_result.group(1) )
 				self.tune_elements.append(grace)
 				return
+
 			#is the element an echo beat?
 			echo_beat_result=self.regex_echo_beat.search(element)
 			if echo_beat_result:
 				echo_beat = "\\echo"+self.lilynote( echo_beat_result.group(1) )
 				self.tune_elements.append(echo_beat)
 				return
+
 			#is the element a doubling?
 			doubling_result=self.regex_doubling.search(element)
 			if doubling_result:
 				doubling = "\\dbl"+self.lilynote( doubling_result.group(1) )
 				self.tune_elements.append(doubling)
 				return
+
 			#is the element a half doubling?
 			hdoubling_result=self.regex_half_doubling.search(element)
 			if hdoubling_result:
 				half_doubling = "\\hdbl"+self.lilynote( hdoubling_result.group(1) )
 				self.tune_elements.append(half_doubling)
 				return
+
 			#is the element a pele?
 			pele_result=self.regex_pele.search(element)
 			if pele_result:
 				pele = "\\pel"+self.lilynote( pele_result.group(1) )
 				self.tune_elements.append(pele)
 				return
+
 			#is the element a thumb pele?
 			tpele_result=self.regex_thumb_pele.search(element)
 			if tpele_result:
 				tpele = "\\tpel"+self.lilynote( tpele_result.group(1) )
 				self.tune_elements.append(tpele)
 				return
+
 			#is the element a hpele?
 			hpele_result=self.regex_half_pele.search(element)
 			if hpele_result:
 				hpele = "\\hpel"+self.lilynote( hpele_result.group(1) )
 				self.tune_elements.append(hpele)
 				return
+
 			#is the element a strike?
 			strike_result=self.regex_strike.search(element)
 			if strike_result:
@@ -257,6 +266,7 @@ class bwwtolily :
 					strike = "\\gra"
 				self.tune_elements.append(strike)
 				return
+
 			#is the element a dot?
 			dot_result=self.regex_dot.search(element)
 			if dot_result:
@@ -274,9 +284,11 @@ class bwwtolily :
 				#get the matching elements
 				note_count = slur_result.group("note_count")
 				end_note = slur_result.group("end_note")
+
 				#get the length of the slur as an integer
 				slur_len = int(note_count)
 				'''find the position of the note that is slur_len from the end'''
+
 				#get the tune_elements lenght
 				elem_index = len(self.tune_elements)-1
 				note_count = 0
@@ -295,6 +307,7 @@ class bwwtolily :
 				#add the slur end
 				self.tune_elements.append(")")
 				return
+
 			#is this a bww tie slur?
 			if element == "^ts":
 				self.slur_tie_pending = True
