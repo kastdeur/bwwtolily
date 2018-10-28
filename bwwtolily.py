@@ -343,6 +343,7 @@ class bwwtolily :
 							self.tune_elements.append(dict_result)
 							return
 				except:
+					self.tune_elements.append("%{"+element+"%}")
 					do_print( "unparsed: "+element)
 			return
 
