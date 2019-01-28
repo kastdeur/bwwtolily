@@ -29,7 +29,9 @@ class bwwtolily :
 			#make a regex to determine if something is a lilypond note
 			self.regex_lilynote= re.compile("[abcdefgAG][0-9]*")
 			#try to determine the time signature
-			self.sig_regex = re.compile("([0-9])_([0-9])")
+			self.sig_regex = re.compile("([0-9]{1,2})_([0-9]{1,2})")
+			#alternative time signature for (cut) common time
+			self.sig_regex_common = re.compile("C_\W")
 			#a regex to find notes
 			self.regex_note_info=re.compile("(?P<note>[A-Z]+)(?P<dir>[a-z]*)_(?P<time>[0-9]{1,2})")
 			#a regex to find grace notes
@@ -55,7 +57,7 @@ class bwwtolily :
 			#a regex to find note slurs, not slur embellishments
 			self.regex_slur = re.compile("\^(?P<note_count>[0-9])(?P<end_note>[a-z]*)")
 			#we need a list to ignore
-			self.ignore_elements = ("sharpf","sharpc","space","&")
+			self.ignore_elements = ("sharpf","sharpc","space","&", "C")
 			#create a dictionary of common bww elements and their lily counterparts
 			self.transpose_dict = {
 				"!":"\\bar \"|\"\n",
@@ -131,7 +133,13 @@ class bwwtolily :
 			result = self.sig_regex.search(file_text)
 			if result:
 				self.tune_time_sig = result.group(1)+"/"+result.group(2)
+
 			else:
+			    result = self.sig_regex_common.search(file_text)
+			    if result:
+				self.tune_time_sig = "2/2"
+
+			    else:
 				self.tune_time_sig = "4/4"
 
 			#get the tunes note info
@@ -336,6 +344,11 @@ class bwwtolily :
 				result = self.sig_regex.search(element)
 				if result:
 					return
+
+				result = self.sig_regex_common.search(element)
+				if result:
+					return
+
 				try:
 
 					dict_result = self.transpose_dict[element]
