@@ -52,6 +52,8 @@ class bwwtolily :
 			self.regex_strike = re.compile("str([h|l]*[abcdefg])")
 			#a regex to find dots
 			self.regex_dot = re.compile("'[h|l]*[abcdefg]")
+                        #a regex to find note ties
+                        self.regex_tie = re.compile("\^t[h|l]?[abcdefg]")
 			#a regex to find sub repeats
 			self.regex_sub_repeat = re.compile("'([0-9]+)")
 			#a regex to find note slurs, not slur embellishments
@@ -162,7 +164,7 @@ class bwwtolily :
 				self.transpose(element)
 
 	def lilynote(self,bwwname):
-			#convert a bww notename to a lilypond notename
+			'''convert a bww notename to a lilypond notename'''
 			#make the notename lowercase
 			notename = bwwname.lower()
 
@@ -179,7 +181,7 @@ class bwwtolily :
 			return lilynote
 
 	def transpose(self,element):
-			#receive a bww element and return a lilypond equivalent
+			'''receive a bww element and return a lilypond equivalent'''
 
 			#is the element a note?
 			note_result = self.regex_note_info.search(element)
@@ -285,6 +287,12 @@ class bwwtolily :
 				else:
 					self.tune_elements[self.most_recent_note]+="."
 				return
+
+                        #is the element a note tie
+                        tie_result = self.regex_tie.search(element)
+                        if tie_result:
+                                self.tune_elements[self.most_recent_note]+="~"
+                                return
 
 			#is the element a slur?
 			slur_result = self.regex_slur.search(element)
