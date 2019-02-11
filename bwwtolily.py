@@ -24,7 +24,9 @@ class bwwtolily :
 			self.most_recent_note = 0
 			self.in_note_group=False
 			self.slur_tie_pending = False
+			self.tuplet_pending = False
 			self.last_group_close=0
+
 			'''compile a few regex queries'''
 			#make a regex to determine if something is a lilypond note
 			self.regex_lilynote= re.compile("[abcdefgAG][0-9]*")
@@ -52,12 +54,16 @@ class bwwtolily :
 			self.regex_strike = re.compile("str([h|l]*[abcdefg])")
 			#a regex to find dots
 			self.regex_dot = re.compile("'[h|l]*[abcdefg]")
-                        #a regex to find old note ties
-                        self.regex_old_tie = re.compile("\^t[h|l]?[abcdfg]")
+			#a regex to find old note ties
+			self.regex_old_tie = re.compile("\^t[h|l]?[abcdfg]")
+			#a regex to find tuplets
+			self.regex_tuplet = re.compile("\^(?P<upper>[0-9])(?P<lower>[0-9]?)(?P<type>[se])")
+
 			#a regex to find sub repeats
 			self.regex_sub_repeat = re.compile("'([0-9]+)")
 			#a regex to find note slurs, not slur embellishments
 			self.regex_slur = re.compile("\^(?P<note_count>[0-9])(?P<end_note>[a-z]*)")
+
 			#we need a list to ignore
 			self.ignore_elements = ("sharpf","sharpc","space","&", "C")
 			#create a dictionary of common bww elements and their lily counterparts
@@ -288,11 +294,31 @@ class bwwtolily :
 					self.tune_elements[self.most_recent_note]+="."
 				return
 
-                        #is the element an old note tie
-                        old_tie_result = self.regex_old_tie.search(element)
-                        if old_tie_result:
-                                self.tune_elements[self.most_recent_note]+="~"
-                                return
+			#is the element an old note tie
+			old_tie_result = self.regex_old_tie.search(element)
+			if old_tie_result:
+				self.tune_elements[self.most_recent_note]+="~"
+				return
+
+			#is the element a tuplet
+			tuplet_result = self.regex_tuplet.search(element)
+			if tuplet_result:
+				upper = tuplet_result.group("upper")
+				lower = tuplet_result.group("lower")
+				start = tuplet_result.group("type")
+
+				if start == 's':
+					if not lower:
+					    lower = 2
+
+					fraction = "{}/{}".format(upper, lower)
+
+					self.tune_elements.append("\\tuplet {} {{".format(fraction))
+				elif start == 'e':
+					self.tune_elements.append("}")
+
+				return
+
 
 			#is the element a slur?
 			slur_result = self.regex_slur.search(element)
