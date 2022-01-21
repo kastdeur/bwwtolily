@@ -8,7 +8,7 @@
 from argparse import ArgumentParser
 import sys,os,re,subprocess
 
-version = "0.6.2"
+version = "0.6.3"
 
 #make a print function to handle various version of python
 def do_print(string):
@@ -143,12 +143,12 @@ class bwwtolily :
 				self.tune_time_sig = result.group(1)+"/"+result.group(2)
 
 			else:
-			    result = self.sig_regex_common.search(file_text)
-			    if result:
-				self.tune_time_sig = "2/2"
+				result = self.sig_regex_common.search(file_text)
+				if result:
+					self.tune_time_sig = "2/2"
 
-			    else:
-				self.tune_time_sig = "4/4"
+				else:
+					self.tune_time_sig = "4/4"
 
 			#get the tunes note info
 			'''greedy, multiline, from first ampersand to !'''
@@ -309,7 +309,7 @@ class bwwtolily :
 
 				if start == 's':
 					if not lower:
-					    lower = 2
+						lower = 2
 
 					fraction = "{}/{}".format(upper, lower)
 
